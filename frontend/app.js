@@ -28,10 +28,27 @@ function showApp(name){
   logoutBtn.style.display="inline-flex";
 }
 
-function logout(){
+function logout() {
+
+  // Clear your app session
   localStorage.clear();
+  sessionStorage.clear();
+
+  // Disable Google auto sign-in
+  if (window.google?.accounts?.id) {
+    google.accounts.id.disableAutoSelect();
+  }
+
+  // Optional: revoke consent (stronger)
+  if (window.google?.accounts?.id && window.currentUserEmail) {
+    google.accounts.id.revoke(window.currentUserEmail, () => {
+      console.log("Google session revoked");
+    });
+  }
+
   location.reload();
 }
+
 
 function getShift(){
   const h = new Date().getHours();
@@ -266,6 +283,7 @@ function resetAll(){
   location.reload();
 
 }
+
 
 
 
