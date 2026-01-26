@@ -40,6 +40,16 @@ function getShift(){
   return "Shift-C";
 }
 
+function limitOneDecimal(input){
+  if(!input.value) return;
+
+  const parts = input.value.split(".");
+
+  if(parts.length > 1){
+    input.value = parts[0] + "." + parts[1].slice(0,1);
+  }
+}
+
 function startEntry(){
   const checks = document.querySelectorAll("#machineSelectPage input:checked");
   if(checks.length === 0){
@@ -120,6 +130,13 @@ async function submitData(){
   }
 
   document.getElementById("loadingOverlay").style.display="flex";
+  const cleanMesh = mesh.value
+  ? Number(mesh.value).toString()
+  : "";
+
+  const cleanMoisture = moisture.value
+  ? Number(moisture.value).toString()
+  : "";
 
   const entry = {
     name:userName,
@@ -249,5 +266,6 @@ function resetAll(){
   location.reload();
 
 }
+
 
 
