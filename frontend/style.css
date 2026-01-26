@@ -943,3 +943,9 @@ textarea:focus {
 .btn-back:hover{
   background:rgba(255,255,255,0.06);
 }
+
+#g_id_onload,
+.g_id_signin {
+  display: flex;
+  justify-content: center;
+}
