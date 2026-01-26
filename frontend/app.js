@@ -102,7 +102,9 @@ async function sendAllToSheet(){
 
     await fetch("api/submit", {
       method: "POST",
-      mode: "no-cors",
+      headers: {
+          "Content-Type": "application/json"
+      }
       body: JSON.stringify(entry)
     });
 
@@ -245,4 +247,5 @@ function resetFields(){
 
 function resetAll(){
   location.reload();
+
 }
