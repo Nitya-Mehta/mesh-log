@@ -14,7 +14,7 @@ window.onload = () => {
   }
 };
 
-function handleCredential(response){
+window.handleCredential = function(response){
   const payload = JSON.parse(atob(response.credential.split('.')[1]));
   userName = payload.name;
   localStorage.setItem("userName", userName);
@@ -249,3 +249,4 @@ function resetAll(){
   location.reload();
 
 }
+
