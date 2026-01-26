@@ -104,7 +104,7 @@ async function sendAllToSheet(){
       method: "POST",
       headers: {
           "Content-Type": "application/json"
-      }
+      },
       body: JSON.stringify(entry)
     });
 
@@ -249,4 +249,5 @@ function resetAll(){
   location.reload();
 
 }
+
 
