@@ -5,10 +5,16 @@ let allEntries = [];
 let sessionDate = "";
 let sessionShift = "";
 let currentTime = "";
+const API_SUBMIT_PATH = "/api/submit";
+const LOCAL_SCRIPT_URL = window.LOCAL_APP_CONFIG?.SCRIPT_URL || "";
+const USER_NAME_KEY = "userName";
+const LOGGED_OUT_KEY = "meshlogLoggedOut";
 
 window.onload = () => {
-  const savedName = localStorage.getItem("userName");
-  if(savedName){
+  const savedName = localStorage.getItem(USER_NAME_KEY);
+  const wasLoggedOut = localStorage.getItem(LOGGED_OUT_KEY) === "1";
+
+  if(savedName && !wasLoggedOut){
     userName = savedName;
     showApp(userName);
   }
@@ -17,7 +23,8 @@ window.onload = () => {
 window.handleCredential = function(response){
   const payload = JSON.parse(atob(response.credential.split('.')[1]));
   userName = payload.name;
-  localStorage.setItem("userName", userName);
+  localStorage.setItem(USER_NAME_KEY, userName);
+  localStorage.removeItem(LOGGED_OUT_KEY);
   showApp(userName);
 }
 
@@ -29,17 +36,18 @@ function showApp(name){
 }
 
 function logout() {
-
-  // Clear your app session
-  localStorage.clear();
+  // Mark the user as explicitly logged out so we do not auto-restore.
+  localStorage.setItem(LOGGED_OUT_KEY, "1");
+  localStorage.removeItem(USER_NAME_KEY);
   sessionStorage.clear();
+  userName = null;
 
   // Disable Google auto sign-in
   if (window.google?.accounts?.id) {
     google.accounts.id.disableAutoSelect();
   }
 
-  // Optional: revoke consent (stronger)
+  // Optional: revoke consent (stronger) if we know the email.
   if (window.google?.accounts?.id && window.currentUserEmail) {
     google.accounts.id.revoke(window.currentUserEmail, () => {
       console.log("Google session revoked");
@@ -123,18 +131,45 @@ function showSuccessToast() {
   }, 2500);
 }
 
+async function postEntry(entry){
+  const payload = JSON.stringify(entry);
+
+  try {
+    const response = await fetch(API_SUBMIT_PATH, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: payload
+    });
+
+    if(!response.ok){
+      const message = await response.text();
+      throw new Error(message || "Submission failed");
+    }
+
+    return await response.text();
+  } catch (error) {
+    const isLocalHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    const isFileProtocol = window.location.protocol === "file:";
+
+    if((isLocalHost || isFileProtocol) && LOCAL_SCRIPT_URL){
+      await fetch(LOCAL_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: payload
+      });
+      return "LOCAL_FALLBACK_SUBMITTED";
+    }
+
+    throw error;
+  }
+}
+
 async function sendAllToSheet(){
 
   for(const entry of allEntries){
-
-    await fetch("api/submit", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify(entry)
-    });
-
+    await postEntry(entry);
   }
 
 }
@@ -147,14 +182,6 @@ async function submitData(){
   }
 
   document.getElementById("loadingOverlay").style.display="flex";
-  const cleanMesh = mesh.value
-  ? Number(mesh.value).toString()
-  : "";
-
-  const cleanMoisture = moisture.value
-  ? Number(moisture.value).toString()
-  : "";
-
   const entry = {
     name:userName,
     machine:selectedMachines[currentIndex],
@@ -218,7 +245,13 @@ function restoreIfExists(){
 
 async function showSummary(){
   document.getElementById("loadingOverlay").style.display="flex";
-  await sendAllToSheet();
+  try {
+    await sendAllToSheet();
+  } catch (err) {
+    document.getElementById("loadingOverlay").style.display="none";
+    alert(`Submission failed: ${err.message}`);
+    return;
+  }
 
   currentMachineTitle.style.display="none";
   currentTime = new Date().toLocaleTimeString("en-IN", {
@@ -283,7 +316,3 @@ function resetAll(){
   location.reload();
 
 }
-
-
-
-
