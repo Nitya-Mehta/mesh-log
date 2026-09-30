@@ -144,7 +144,10 @@ async function postEntry(entry){
     });
 
     if(!response.ok){
-      const message = await response.text();
+      const contentType = response.headers.get("Content-Type") || "";
+      const message = contentType.includes("application/json")
+        ? (await response.json()).error
+        : await response.text();
       throw new Error(message || "Submission failed");
     }
 
