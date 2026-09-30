@@ -65,6 +65,14 @@ function getShift(){
   return "Shift-C";
 }
 
+function getShiftDate(){
+  const date = new Date();
+  if(date.getHours() < 7){
+    date.setDate(date.getDate() - 1);
+  }
+  return date.toLocaleDateString("en-GB");
+}
+
 function limitOneDecimal(input){
   if(!input.value) return;
 
@@ -86,8 +94,7 @@ function startEntry(){
   currentIndex = 0;
   allEntries = [];
 
-  const now = new Date();
-  sessionDate = now.toLocaleDateString("en-GB");
+  sessionDate = getShiftDate();
   sessionShift = getShift();
 
   machineSelectPage.style.display="none";
