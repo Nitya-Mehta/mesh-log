@@ -1,2 +1,6 @@
 .env
 frontend/local-config.js
+.vercel
+.env*
+!.env.example
+.DS_Store

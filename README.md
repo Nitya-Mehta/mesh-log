@@ -1,78 +1,53 @@
-# 📊 Mesh Log — Production Logging System
+# Mesh Log
 
-A real-time production logging system with Google authentication that captures machine data and automatically stores it in Google Sheets with structured formatting and shift classification.
+A real-time production logging system with Google authentication that captures machine data and stores it in Google Sheets with structured formatting and shift classification.
 
----
+## Overview
 
-## 🚀 Overview
+Mesh Log is a web-based logging system designed to simplify data entry and tracking in industrial workflows. It allows authenticated users to securely input production details, which are recorded and organized for analysis.
 
-Mesh Log is a web-based logging system designed to simplify data entry and tracking in industrial workflows. It allows authenticated users to securely input production details, which are instantly recorded and organized for analysis.
+## Authentication
 
----
+- Google Sign-In for secure access
+- Authorized user flow for production logging
+- User identity capture for accountability
 
-## 🔐 Authentication
+## Features
 
-- 🔑 Google Sign-In for secure access  
-- 👤 Ensures only authorized users can log entries  
-- 📧 Captures user identity for tracking and accountability  
+- Production data entry through a web interface
+- Automatic date and time logging
+- Shift classification based on current time
+- Google Sheets integration
+- Structured data storage for tracking and reporting
+- Secure access using Google authentication
 
----
+## How It Works
 
-## ⚙️ Features
+1. User signs in with a Google account.
+2. User selects mills and enters production data.
+3. Data is submitted through the app backend.
+4. The backend forwards the entry to Google Apps Script.
+5. Google Apps Script appends the entry to a Google Sheet.
 
-- 📥 Easy data entry via web interface  
-- 🕒 Automatic date and time logging  
-- 🔄 Shift classification (Shift-A, B, C based on time)  
-- 📊 Direct integration with Google Sheets  
-- 📈 Structured data storage for tracking and reporting  
-- ⚡ Real-time logging with no manual processing  
-- 🔐 Secure access using Google authentication  
+## Tech Stack
 
----
+- Frontend: HTML, CSS, JavaScript
+- Backend: Vercel serverless function
+- Automation: Google Apps Script
+- Database: Google Sheets
+- Authentication: Google OAuth
+- Hosting: Vercel
 
-## 🧠 How It Works
+## Local Development
 
-1. User logs in using Google account  
-2. Enters production data (machine, grade, mesh, moisture, etc.)  
-3. Data is sent to a Google Apps Script backend  
-4. System automatically:
-   - Formats date and time  
-   - Assigns shift based on current time  
-   - Cleans and structures input data  
-5. Data is appended to a Google Sheet as a new row  
+```bash
+cp .env.example .env
+make dev
+```
 
----
+Open the local URL printed by Vercel.
 
-## 🛠️ Tech Stack
+## Author
 
-- **Frontend:** HTML / CSS / JavaScript  
-- **Backend:** Google Apps Script  
-- **Database:** Google Sheets  
-- **Authentication:** Google OAuth  
-- **Hosting:** Vercel  
-
----
-
-## 📦 Use Cases
-
-- Factory production logging  
-- Inventory tracking  
-- Employee shift logs  
-- Data entry automation systems  
-
----
-
-## 💡 Key Highlights
-
-- Secure user authentication  
-- No traditional backend required  
-- Uses Google Sheets as a live database  
-- Built for real-world usability and speed  
-- Simple, scalable, and easy to adapt  
-
----
-
-## 🔗 Author
-
-**Nitya Mehta**  
-GitHub: https://github.com/Nitya-Mehta  
+Nitya Mehta  
+GitHub: https://github.com/Nitya-Mehta
